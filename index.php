@@ -1,3 +1,55 @@
+<?php require '../connexion/connexion.php' ?>
+<?php
+// var_dump($_POST);
+session_start();// à mettre dans toutes les pages de l'admin ; SESSION et authentification
+	if(isset($_SESSION['connexion']) && $_SESSION['connexion']=='connecté'){
+		$id_utilisateur=$_SESSION['id_utilisateur'];
+		$prenom=$_SESSION['prenom'];
+		$nom=$_SESSION['nom'];
+
+		//echo $_SESSION['connexion'];
+
+	}else{//l'utilisateur n'est pas connecté
+		header('location:authentification.php');
+	}
+//pour se déconnecter
+if(isset($_GET['quitter'])){// on récupère le terme quitter dans l'url
+
+	$_SESSION['connexion']='';// on vide les variables de session
+	$_SESSION['id_utilisateur']='';
+	$_SESSION['prenom']='';
+	$_SESSION['nom']='';
+
+	unset($_SESSION['connexion']);
+	session_destroy();
+
+	header('location:../index.php');
+}
+	?>
+<?php
+//gestion des contenus
+//insertion d'une experience
+if(isset($_POST['titre_e'])){//si on récupere un nouveau experience
+    if($_POST['titre_e']!='' && $_POST['sous_titre_e']!='' && $_POST['dates_e']!='' && $_POST['description_e']!=''){// si experience est pas vide
+            $titre_f = addslashes($_POST['titre_e']);
+            $sous_titre_f = addslashes($_POST['sous_titre_e']);
+            $dates_f = addslashes($_POST['dates_e']);
+            $description_f = addslashes($_POST['description_e']);
+            $pdoCV->exec("INSERT INTO t_experiences VALUES (NULL, '$titre_e', '$sous_titre_e', '$dates_e', '$description_e', '$id_utilisateur')"); //mettre $id_utilisateur quand on l'aura en variable de session
+            header("location: ../admin/experiences.php");
+            exit();
+    }//ferme le if
+}//ferme le if isset
+// suppression d'un experience
+if(isset($_GET['id_experience'])){
+    $efface = $_GET['id_experience'];
+    $sql = "DELETE FROM t_experiences WHERE id_experience = '$efface'";
+    $pdoCV->query($sql);//ou avec exec
+    header("location: ../admin/experiences.php");
+
+}
+
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,13 +62,13 @@
 	<meta name="description" content="KARMO is a creative and modern template for digital agencies">
 
 	<!-- STYLES -->
-	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="assets/css/flexslider.css">
-	<link rel="stylesheet" href="assets/css/animsition.min.css">
-	<link rel="stylesheet" href="assets/css/style.css">
-	<link rel="stylesheet" href="assets/css/amadou.css">
-	<link rel="stylesheet" href="assets/css/owl.carousel.css">
-	<link rel="stylesheet" href="assets/css/owl.theme.css">
+	<link rel="stylesheet" href="karmo-master/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="karmo-master/assets/css/flexslider.css">
+	<link rel="stylesheet" href="karmo-master/assets/css/animsition.min.css">
+	<link rel="stylesheet" href="karmo-master/assets/css/style.css">
+	<link rel="stylesheet" href="karmo-master/assets/css/amadou.css">
+	<link rel="stylesheet" href="karmo-master/assets/css/owl.carousel.css">
+	<link rel="stylesheet" href="karmo-master/assets/css/owl.theme.css">
 
 	<!-- Fontawesome -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
@@ -32,10 +84,11 @@
 	<!-- HEADER  -->
 	<header class="main-header">
 		<div class="container-fluid">
+			
 				<!-- box header -->
 				<div class="box-header">
 						<div class="box-logo">
-								<a href="index.html"><img src="assets/img/logo.png" width="80" alt="Logo"></a>
+								<a href="index.html"><img src="karmo-master/assets/img/logo.png" width="80" alt="Logo"></a>
 						</div>
 						<!-- box-nav -->
 						<a class="box-primary-nav-trigger" href="#0">
@@ -93,7 +146,7 @@
 		<div class="container">
 			<div class="row center">
 				<div class="col-md-8 col-md-offset-2">
-					<img src="assets/img/about.png" alt="Khaki HTML Template" width="300">
+					<img src="karmo-master/assets/img/about.png" alt="Khaki HTML Template" width="300">
 					<div class="km-space"></div>
 					<h5 class="lead">This is our most powerful template, that provide functionality to create corporate, app showcase, gaming, music, barber, etc websites.</h5>
 				</div>
@@ -108,29 +161,29 @@
 			    <div class="col-xs-12 col-lg-3 col-md-3">
                     <div class="count-item">
                         <i class="lnr lnr-clock"></i>
-                        <div class="numscroller" data-slno='1' data-min='0' data-max='4444' data-delay='10' data-increment="10">9909</div>
-                        <div class="count-name-intro">Hours</div>
+                        <div class="numscroller" data-slno='1' data-min='0' data-max='500' data-delay='10' data-increment="10">500</div>
+                        <div class="count-name-intro">Heures</div>
                     </div>
                 </div>
                 <div class="col-xs-12  col-lg-3 col-md-3">
                     <div class="count-item">
                         <i class="lnr lnr-rocket"></i>
-                        <div class="numscroller" data-slno='1' data-min='0' data-max='1111' data-delay='10' data-increment="5">1111</div>
-                        <div class="count-name-intro">Projects</div>
+                        <div class="numscroller" data-slno='1' data-min='0' data-max='2' data-delay='10' data-increment="5">1</div>
+                        <div class="count-name-intro">Projets</div>
                     </div>
                 </div>
                 <div class="col-xs-12  col-lg-3 col-md-3">
                     <div class="count-item">
                         <i class="lnr lnr-coffee-cup"></i>
-                        <div class="numscroller" data-slno='1' data-min='0' data-max='1555' data-delay='10' data-increment="5">1555</div>
-                        <div class="count-name-intro">coffe's</div>
+                        <div class="numscroller" data-slno='1' data-min='0' data-max='32' data-delay='10' data-increment="5">32</div>
+                        <div class="count-name-intro">Boissons</div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-lg-3 col-md-3">
                     <div class="count-item">
                         <i class="lnr lnr-camera"></i>
-                        <div class="numscroller" data-slno='1' data-min='0' data-max='4444' data-delay='10' data-increment="10">4444</div>
-                        <div class="count-name-intro">Photos taken</div>
+                        <div class="numscroller" data-slno='1' data-min='0' data-max='76' data-delay='10' data-increment="10">76</div>
+                        <div class="count-name-intro">Photos prises</div>
                     </div>
                 </div>
         	</div>
@@ -153,44 +206,44 @@
 						tempor incididunt ut labore et dolore magna aliqua.
 						</p>
         <div class="skillbar clearfix " data-percent="60%">
-            <div class="skillbar-title" style="background: #970cc1;"><span>C & C++</span></div>
-            <div class="skillbar-bar" style="background:#970cc1;"></div>
+            <div class="skillbar-title" style="background: #ffeedb;"><span>C & C++</span></div>
+            <div class="skillbar-bar" style="background:#ffeedb;"></div>
             <div class="skill-bar-percent">60%</div>
         </div>
         <!-- Ende Skill Bar -->
         <div class="skillbar clearfix " data-percent="80%">
-            <div class="skillbar-title" style="background: #DD1E2F;"><span>HTML5</span></div>
-            <div class="skillbar-bar" style="background: #DD1E2F;"></div>
+            <div class="skillbar-title" style="background: #ffeedb;"><span>HTML5</span></div>
+            <div class="skillbar-bar" style="background: #ffeedb;"></div>
             <div class="skill-bar-percent">80%</div>
         </div>
         <!-- Ende Skill Bar -->
         <div class="skillbar clearfix " data-percent="75%">
-            <div class="skillbar-title" style="background: #192823;"><span>SQL</span></div>
-            <div class="skillbar-bar" style="background: #454545;"></div>
+            <div class="skillbar-title" style="background: #ffeedb;"><span>SQL</span></div>
+            <div class="skillbar-bar" style="background: #ffeedb;"></div>
             <div class="skill-bar-percent">75%</div>
         </div>
         <!-- Ende Skill Bar -->
         <div class="skillbar clearfix " data-percent="75%">
-            <div class="skillbar-title" style="background: #EBB035;"><span>CSS3</span></div>
-            <div class="skillbar-bar" style="background: #EBB035;"></div>
+            <div class="skillbar-title" style="background: #ffeedb;"><span>CSS3</span></div>
+            <div class="skillbar-bar" style="background: #ffeedb;"></div>
             <div class="skill-bar-percent">75%</div>
         </div>
         <!-- Ende Skill Bar -->
         <div class="skillbar clearfix " data-percent="70%">
-            <div class="skillbar-title" style="background:  #55a69f;"><span>Javascript</span></div>
-            <div class="skillbar-bar" style="background:  #55a69f;"></div>
+            <div class="skillbar-title" style="background:  #ffeedb;"><span>Javascript</span></div>
+            <div class="skillbar-bar" style="background:  #ffeedb;"></div>
             <div class="skill-bar-percent">70%</div>
         </div>
         <!-- Ende Skill Bar -->
         <div class="skillbar clearfix " data-percent="60%">
-            <div class="skillbar-title" style="background: #06A2CB;"><span>jQuery</span></div>
-            <div class="skillbar-bar" style="background: #06A2CB;"></div>
+            <div class="skillbar-title" style="background: #ffeedb;"><span>jQuery</span></div>
+            <div class="skillbar-bar" style="background: #ffeedb;"></div>
             <div class="skill-bar-percent">60%</div>
         </div>
         <!-- Ende Skill Bar -->
         <div class="skillbar clearfix " data-percent="60%">
-            <div class="skillbar-title" style="background: #218559;"><span>Photoshop</span></div>
-            <div class="skillbar-bar" style="background: #218559;"></div>
+            <div class="skillbar-title" style="background: #ffeedb;"><span>Photoshop</span></div>
+            <div class="skillbar-bar" style="background: #ffeedb;"></div>
             <div class="skill-bar-percent">60%</div>
         </div>
         <!-- Ende Skill Bar -->
@@ -211,7 +264,7 @@
 							<div class="feature-item">
 								<div class="col-md-3 col-sm-6">
 									<div class="item-head">
-										<img src="C:\xampp\htdocs\site2\karmo-master\assets\img\batman.png" height="60" width="60" alt="">
+										<img src="karmo-master/assets/img/batman.png" height="60" width="60" alt="">
 									</div>
 									<h6>Batman</h6>
 									<p>citation</p>
@@ -221,7 +274,7 @@
 							<div class="feature-item">
 								<div class="col-md-3 col-sm-6">
 									<div class="item-head">
-										<img src="C:\xampp\htdocs\site2\karmo-master\assets\img\superman.png" height="60" width="60" alt="">
+										<img src="karmo-master\assets\img\batman.png" height="60" width="60" alt="">
 									</div>
 									<h6>Superman</h6>
 									<p>citation</p>
@@ -232,7 +285,7 @@
 							<div class="feature-item">
 								<div class="col-md-3 col-sm-6">
 									<div class="item-head">
-										<img src="C:\xampp\htdocs\site2\karmo-master\assets\img\flash.png" height="60" width="60" alt="">
+										<img src="karmo-master/assets/img\flash.png" height="60" width="60" alt="">
 									</div>
 									<h6>Flash</h6>
 									<p>citation</p>
@@ -243,7 +296,7 @@
 							<div class="feature-item">
 								<div class="col-md-3 col-sm-6">
 									<div class="item-head">
-										<img src="C:\xampp\htdocs\site2\karmo-master\assets\img\green.png" height="60" width="60" alt="">
+										<img src="karmo-master/assets/img/green.png" height="60" width="60" alt="">
 									</div>
 									<h6>Green Lantern</h6>
 									<p>citation</p>
@@ -256,8 +309,14 @@
 
 	<!-- FORMATION ET EXPERIENCE PARALAX -->
 	<section id="forexp"></section>
-	<section id="services" class="services mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--full-height mbr-section--bg-adapted mbr-parallax-background"  style="background-image: url(assets/img/services.jpg);">
+	<section id="services" class="services mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--full-height mbr-section--bg-adapted mbr-parallax-background"  style="background-image: url(karmo-master/assets/img/services.jpg);">
 		<div class="section-overlay"></div>
+		<?php
+			$experience = $pdoCV->prepare("SELECT * FROM t_experiences WHERE utilisateur_id = '$id_utilisateur' ");// prépare la requête
+			$experience->execute();// execute la
+			$nbr_experiences = $experience->rowCount();//compte les lignes
+
+		?>
 		<div class="container">
 			<div class="row center">
 				<div class="col-md-8 col-md-offset-2 col-sm-12">
@@ -336,13 +395,13 @@
 			</div>
 			<div class="row">
 				<div class="col-lg-6 right col-full right-0">
-					<img src="C:\xampp\htdocs\site2\karmo-master\assets\img\comic.png"  height="60" width="60" alt="">
+					<img src="karmo-master/assets/img/comic.png"  height="60" width="60" alt="">
 					<h6>Ironman</h6>
 					<p>citation
 					</p>
 				</div>
 				<div class="col-lg-6 left col-full left-0">
-					<img src="C:\xampp\htdocs\site2\karmo-master\assets\img\superhero_captain_hero_comic_icon-icons.com_69234.png" height="60" width="60" alt="">
+					<img src="karmo-master/assets/img/superhero_captain_hero_comic_icon-icons.com_69234.png" height="60" width="60" alt="">
 					<h6>Captain America</h6>
 					<p>citation
 					</p>
@@ -350,13 +409,13 @@
 			</div>
 			<div class="row">
 				<div class="col-lg-6 right col-full right-0">
-					<img src="C:\xampp\htdocs\site2\karmo-master\assets\img\hulk.png" height="60" width="60" alt="">
+					<img src="karmo-master/assets\img\hulk.png" height="60" width="60" alt="">
 					<h6>Hulk</h6>
 					<p>citation
 					</p>
 				</div>
 				<div class="col-lg-6 left col-full left-0">
-					<img src="C:\xampp\htdocs\site2\karmo-master\assets\img\808672_comic_512x512.png" height="60" width="60" alt="">
+					<img src="karmo-master/assets/img/808672_comic_512x512.png" height="60" width="60" alt="">
 					<h6>Wolverine</h6>
 					<p>citation
 					</p>
@@ -394,12 +453,12 @@
 						<div class="col-md-12">
 						</div>
 						<div id="owl-demo">
-								<div class="item"><img src="assets/img/clients/1.png" alt="Owl Image"></div>
-								<div class="item"><img src="assets/img/clients/2.png" alt="Owl Image"></div>
-								<div class="item"><img src="assets/img/clients/3.png" alt="Owl Image"></div>
-								<div class="item"><img src="assets/img/clients/1.png" alt="Owl Image"></div>
-								<div class="item"><img src="assets/img/clients/2.png" alt="Owl Image"></div>
-								<div class="item"><img src="assets/img/clients/3.png" alt="Owl Image"></div>
+								<div class="item"><img src="karmo-master/assets/img/clients/1.png" alt="Owl Image"></div>
+								<div class="item"><img src="karmo-master/assets/img/clients/2.png" alt="Owl Image"></div>
+								<div class="item"><img src="karmo-master/assets/img/clients/3.png" alt="Owl Image"></div>
+								<div class="item"><img src="karmo-master/assets/img/clients/1.png" alt="Owl Image"></div>
+								<div class="item"><img src="karmo-master/assets/img/clients/2.png" alt="Owl Image"></div>
+								<div class="item"><img src="karmo-master/assets/img/clients/3.png" alt="Owl Image"></div>
 						</div>
 				</div>
 		</div>
@@ -422,24 +481,24 @@
 			</div>
 	</section>
 	<!-- Testimonials -->
-	<section id="testimonials" class="testimonials mt-100 mb-100 mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--bg-adapted mbr-parallax-background" style="background-image: url(assets/img/testimonials.jpg);">
+	<section id="testimonials" class="testimonials mt-100 mb-100 mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--bg-adapted mbr-parallax-background" style="background-image: url(karmo-master/assets/img/testimonials.jpg);">
         <div class="container">
         	<div class="row">
                 <div class="col-md-12">
                     <div class="flexslider">
                         <ul class="slides">
                             <li>
-                                <div class="avatar"><img src="assets/img/testimonial1.jpg" alt="Sedna Testimonial Avatar"></div>
+                                <div class="avatar"><img src="karmo-master/assets/img/testimonial1.jpg" alt="Sedna Testimonial Avatar"></div>
                                 <h5>"Lorem ipsum dolor sit amet, nullam lucia nisi."</h5>
                                 <p class="author">Tanislav Robert, Product Designer.</p>
                             </li>
                             <li>
-                                <div class="avatar"><img src="assets/img/testimonial2.jpg" alt="Sedna Testimonial Avatar"></div>
+                                <div class="avatar"><img src="karmo-master/assets/img/testimonial2.jpg" alt="Sedna Testimonial Avatar"></div>
                                 <h5>"Nunc vel maximus purus. Nullam ac urna ornare."</h5>
                                 <p class="author">Tanislav Alexandru, Founder @ WocTech.</p>
                             </li>
                             <li>
-                                <div class="avatar"><img src="assets/img/testimonial3.jpg" alt="Sedna Testimonial Avatar"></div>
+                                <div class="avatar"><img src="karmo-master/assets/img/testimonial3.jpg" alt="Sedna Testimonial Avatar"></div>
                                 <h5>"Nullam ac urna ornare, ultrices nisl ut, lacinia nisi."</h5>
                                 <p class="author">Calota Oana, Pixel Guru</p>
                             </li>
@@ -498,7 +557,7 @@
                     <!-- Start Contact Widget -->
                     <div class="col-md-6 col-xs-12">
                         <div class="footer-widget contact-widget">
-                            <img src="assets/img/footerlogo.png" class="logo-footer img-responsive" alt="Footer Logo" />
+                            <img src="karmo-master/assets/img/footerlogo.png" class="logo-footer img-responsive" alt="Footer Logo" />
                             <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident</p>
                             <ul class="social-icons">
                                 <li>
@@ -566,7 +625,7 @@
                 <div class="copyright-section">
                     <div class="row">
                         <div class="col-md-6">
-                            <p>&copy; 2016 Karmo -  All Rights Reserved <a href="#">Tanislav Robert</a> </p>
+                            <p>&copy; 2016 Karmo -  All Rights Reserved <a href="admin/index1.php">Amadou NIANG</a> </p>
                         </div><!-- .col-md-6 -->
                     </div><!-- .row -->
                 </div>
@@ -575,21 +634,21 @@
 	</footer>
 
 	<!-- SCRIPTS -->
-	<script type="text/javascript" src="assets/js/jquery-2.2.3.min.js"></script>
-	<script type="text/javascript" src="assets/js/animated-headline.js"></script>
-	<script type="text/javascript" src="assets/js/menu.js"></script>
-	<script type="text/javascript" src="assets/js/modernizr.js"></script>
-	<script type="text/javascript" src="assets/js/isotope.pkgd.min.js"></script>
-	<script type="text/javascript" src="assets/js/jquery.flexslider-min.js"></script>
-	<script type="text/javascript" src="assets/js/jquery.animsition.min.js"></script>
-	<script type="text/javascript" src="assets/js/init.js"></script>
-	<script type="text/javascript" src="assets/js/main.js"></script>
-	<script type="text/javascript" src="assets/js/smooth-scroll.js"></script>
-	<script type="text/javascript" src="assets/js/numscroller.js"></script>
-	<script type="text/javascript" src="assets/js/wow.min.js"></script>
-	<script type="text/javascript" src="assets/js/owl.carousel.min.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/jquery-2.2.3.min.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/animated-headline.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/menu.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/modernizr.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/isotope.pkgd.min.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/jquery.flexslider-min.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/jquery.animsition.min.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/init.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/main.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/smooth-scroll.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/numscroller.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/wow.min.js"></script>
+	<script type="text/javascript" src="karmo-master/assets/js/owl.carousel.min.js"></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-	<script src="assets/js/amadou.js"></script>
+	<script src="karmo-master/assets/js/amadou.js"></script>
 
 	<script type="text/javascript">
 		$(window).load(function() {
